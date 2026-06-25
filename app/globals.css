@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-cinzel: var(--font-cinzel), serif;
+  --font-cinzel-decorative: var(--font-cinzel-decorative), serif;
+  --font-geist: var(--font-geist), sans-serif;
+  --color-gold: #d4a853;
+  --color-gold-bright: #ffd700;
+  --color-gold-dim: #8b6914;
+  --color-stone-bg: #0d0d14;
+  --color-parchment: #f0ddb0;
+  --color-parchment-dark: #d4b882;
+  --color-crimson-deep: #2d0a0a;
+  --color-emerald-deep: #0a1f12;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ── Torch Flicker ── */
+@keyframes torchFlicker {
+  0%, 100% { opacity: 1; }
+  15%       { opacity: 0.88; }
+  30%       { opacity: 1; }
+  45%       { opacity: 0.92; }
+  60%       { opacity: 1; }
+  75%       { opacity: 0.85; }
+  90%       { opacity: 0.96; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Particle float ── */
+@keyframes particleFloat {
+  0%   { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+  10%  { opacity: 0.9; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateY(-95vh) translateX(var(--drift, 0px)) scale(0.3); opacity: 0; }
+}
+
+/* ── Gold pulse glow ── */
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 168, 83, 0.3), 0 0 30px rgba(212, 168, 83, 0.1); }
+  50%       { box-shadow: 0 0 30px rgba(212, 168, 83, 0.7), 0 0 60px rgba(212, 168, 83, 0.3); }
+}
+
+/* ── Crystal glow ── */
+@keyframes crystalGlow {
+  0%, 100% { filter: drop-shadow(0 0 8px #60a5fa) drop-shadow(0 0 16px #3b82f6); }
+  50%       { filter: drop-shadow(0 0 18px #93c5fd) drop-shadow(0 0 35px #60a5fa) drop-shadow(0 0 55px #1d4ed8); }
+}
+
+/* ── Crown float ── */
+@keyframes crownFloat {
+  0%, 100% { transform: translateY(0px) rotate(-1deg); }
+  50%       { transform: translateY(-14px) rotate(1deg); }
+}
+
+/* ── Fade up ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Fade in ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Scroll reveal (parchment unfurl) ── */
+@keyframes scrollReveal {
+  from { transform: scaleY(0.05); opacity: 0; transform-origin: top center; }
+  to   { transform: scaleY(1); opacity: 1; transform-origin: top center; }
+}
+
+/* ── Screen shake ── */
+@keyframes shake {
+  0%, 100% { transform: translate(0, 0) rotate(0); }
+  10%       { transform: translate(-6px, -3px) rotate(-0.5deg); }
+  25%       { transform: translate(6px, 4px) rotate(0.5deg); }
+  40%       { transform: translate(-4px, 2px) rotate(-0.3deg); }
+  55%       { transform: translate(5px, -3px) rotate(0.4deg); }
+  70%       { transform: translate(-3px, 3px) rotate(-0.2deg); }
+  85%       { transform: translate(3px, -2px); }
+}
+
+/* ── Verdict stamp ── */
+@keyframes verdictStamp {
+  0%   { transform: scale(2.5) rotate(-10deg); opacity: 0; }
+  50%  { transform: scale(0.92) rotate(2deg); opacity: 1; }
+  70%  { transform: scale(1.06) rotate(-1deg); }
+  85%  { transform: scale(0.97) rotate(0.5deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ── Shimmer (for button) ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── Breathe (for seals/emblems) ── */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+/* ── Flicker in ── */
+@keyframes flickerIn {
+  0%, 15%, 30%, 45%, 60% { opacity: 0; }
+  8%, 22%, 38%, 52%, 100% { opacity: 1; }
+}
+
+/* ── Utility classes ── */
+.animate-fade-up        { animation: fadeUp 0.7s ease-out forwards; }
+.animate-fade-in        { animation: fadeIn 0.5s ease-out forwards; }
+.animate-scroll-reveal  { animation: scrollReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.animate-torch          { animation: torchFlicker 4s ease-in-out infinite; }
+.animate-crystal        { animation: crystalGlow 2.5s ease-in-out infinite; }
+.animate-crown-float    { animation: crownFloat 5s ease-in-out infinite; }
+.animate-gold-pulse     { animation: goldPulse 2s ease-in-out infinite; }
+.animate-shake          { animation: shake 0.6s ease-in-out; }
+.animate-verdict-stamp  { animation: verdictStamp 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.animate-breathe        { animation: breathe 3s ease-in-out infinite; }
+.animate-flicker-in     { animation: flickerIn 0.8s ease-out forwards; }
+
+/* ── Gold button shimmer ── */
+.btn-shimmer {
+  background-size: 200% auto;
+  animation: shimmer 3s linear infinite;
+}
+
+/* ── Parchment texture ── */
+.parchment {
+  background-color: #f0ddb0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+}
+
+/* ── Stone texture overlay ── */
+.stone-texture {
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(120, 60, 0, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(120, 60, 0, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 0%, rgba(139, 105, 20, 0.08) 0%, transparent 70%);
 }

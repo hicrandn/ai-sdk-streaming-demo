@@ -4,3 +4,8 @@ allowBuilds:
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+minimumReleaseAgeExclude:
+  - '@ai-sdk/gateway@4.0.0'
+  - '@ai-sdk/provider-utils@5.0.0'
+  - '@ai-sdk/provider@4.0.0'
+  - ai@7.0.0
