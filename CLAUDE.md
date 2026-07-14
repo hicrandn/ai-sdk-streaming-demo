@@ -15,9 +15,9 @@ pnpm lint     # Run ESLint
 
 **"Tower or Free?"** — a streaming AI app where a medieval king judges anything you type.
 
-**Stack:** Next.js 16 (App Router, Turbopack) · ai@7 + @ai-sdk/openai + @ai-sdk/react · Zod 4 · Tailwind CSS v4 · html2canvas · TypeScript · React 19 + React Compiler
+**Stack:** Next.js 16 (App Router, Turbopack) · ai@7 + @ai-sdk/google + @ai-sdk/react · Zod 4 · Tailwind CSS v4 · html2canvas · TypeScript · React 19 + React Compiler
 
-**Environment:** `OPENAI_API_KEY` in `.env.local`.
+**Environment:** `GEMINI_API_KEY` in `.env.local` (passed explicitly via `createGoogleGenerativeAI({ apiKey })` in `app/api/judge/route.ts` — the `@ai-sdk/google` default env var is `GOOGLE_GENERATIVE_AI_API_KEY`, not `GEMINI_API_KEY`).
 
 ### Request flow
 

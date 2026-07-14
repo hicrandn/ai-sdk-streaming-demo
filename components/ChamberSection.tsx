@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { Plus, Swords, X } from 'lucide-react';
 
 const PLACEHOLDER_CYCLE = ['Elon Musk', 'Kanye West', 'My Ex', 'Pizza', 'Your Boss', 'Mondays', 'AI', 'Your Cat'];
-const SUSPECT_EMOJIS = ['⚔️', '🏹', '🗡️', '🛡️', '🔱', '🏰', '🔮', '👁️', '🌙', '⚜️'];
 
 interface Props {
   suspects: string[];
@@ -36,127 +36,81 @@ export default function ChamberSection({ suspects, onAddSuspect, onRemoveSuspect
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-4 py-16"
-      style={{ background: 'radial-gradient(ellipse at 50% 0%, #1e0a3c 0%, #0d0d14 50%, #0a0a0f 100%)' }}>
-
-      {/* Stone texture */}
-      <div className="absolute inset-0 stone-texture pointer-events-none" />
-
-      {/* Warm side glows */}
-      <div className="absolute inset-y-0 left-0 w-1/4 pointer-events-none"
-        style={{ background: 'linear-gradient(90deg, rgba(180,80,0,0.08) 0%, transparent 100%)' }} />
-      <div className="absolute inset-y-0 right-0 w-1/4 pointer-events-none"
-        style={{ background: 'linear-gradient(270deg, rgba(180,80,0,0.08) 0%, transparent 100%)' }} />
-
-      <div className="relative z-10 w-full max-w-xl flex flex-col items-center gap-8 animate-fade-up">
+    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-16">
+      <div className="relative z-10 w-full max-w-xl flex flex-col items-center gap-8 animate-blur-fade-up">
 
         {/* Header */}
         <div className="text-center flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3 text-amber-600/50 text-xs tracking-[0.4em] uppercase font-cinzel">
-            <div className="w-8 h-px bg-amber-600/30" />⚜<div className="w-8 h-px bg-amber-600/30" />
-          </div>
           <h2 className="font-cinzel font-black text-transparent bg-clip-text text-3xl sm:text-4xl"
-            style={{ backgroundImage: 'linear-gradient(180deg, #fde68a 0%, #d97706 100%)' }}>
+            style={{
+              backgroundImage: 'linear-gradient(180deg, #f0d9a3 0%, #c99a4e 100%)',
+              filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.7))',
+            }}>
             Who Shall Face the King?
           </h2>
-          <p className="text-stone-500 text-sm font-geist">
+          <p className="text-stone-200 text-sm font-geist" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.85)' }}>
             Add up to 6 suspects. The king judges all.
           </p>
         </div>
 
-        {/* Input parchment area */}
-        <div className="w-full rounded-xl overflow-hidden"
-          style={{
-            background: 'linear-gradient(180deg, #f5e6c0 0%, #e8d09a 100%)',
-            boxShadow: '0 0 0 1px rgba(212,168,83,0.4), 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.3)',
-          }}>
-          {/* Parchment header */}
-          <div className="flex items-center gap-2 px-4 py-2 border-b border-amber-800/20">
-            <span className="text-amber-900/60 text-xs font-cinzel uppercase tracking-widest">Royal Court Register</span>
-            <div className="flex-1 h-px bg-amber-800/15" />
-            <span className="text-amber-900/40 text-xs">📜</span>
-          </div>
-          {/* Input row */}
-          <div className="flex items-center gap-2 px-4 py-3">
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
-                  if (suspects.length === 0 && !input.trim()) return;
-                  if (input.trim()) { handleAdd(); }
-                  else if (suspects.length > 0) { onJudge(); }
-                }
-              }}
-              placeholder={PLACEHOLDER_CYCLE[placeholderIdx]}
-              maxLength={60}
-              className="flex-1 bg-transparent text-amber-900 placeholder-amber-700/50 text-base font-geist focus:outline-none"
-            />
-            <button
-              onClick={handleAdd}
-              disabled={!input.trim() || suspects.length >= 6}
-              className="px-4 py-1.5 rounded-lg text-sm font-bold font-cinzel uppercase tracking-wide transition-all duration-150 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{
-                background: 'linear-gradient(180deg, #92400e 0%, #6b2c04 100%)',
-                color: '#fde68a',
-                border: '1px solid rgba(212,168,83,0.3)',
-              }}
-            >
-              + Add
-            </button>
-          </div>
+        {/* Input panel */}
+        <div className="cinematic-panel w-full flex items-center gap-2 rounded-2xl px-4 py-3 transition-colors focus-within:border-amber-400/40">
+          <input
+            ref={inputRef}
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                if (suspects.length === 0 && !input.trim()) return;
+                if (input.trim()) { handleAdd(); }
+                else if (suspects.length > 0) { onJudge(); }
+              }
+            }}
+            placeholder={PLACEHOLDER_CYCLE[placeholderIdx]}
+            maxLength={60}
+            className="flex-1 bg-transparent text-amber-100 placeholder-stone-500 text-base font-geist focus:outline-none"
+          />
+          <button
+            onClick={handleAdd}
+            disabled={!input.trim() || suspects.length >= 6}
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-bold font-cinzel uppercase tracking-wide text-amber-200 border border-amber-400/25 bg-amber-400/10 hover:bg-amber-400/15 transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+          >
+            <Plus size={14} strokeWidth={2.5} />
+            Add
+          </button>
         </div>
 
-        {/* Suspects grid */}
+        {/* Suspects list */}
         {suspects.length > 0 && (
           <div className="w-full flex flex-col gap-3">
-            <p className="text-amber-600/60 text-xs uppercase tracking-widest font-cinzel text-center">
+            <p className="text-amber-300 text-xs uppercase tracking-widest font-cinzel text-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.85)' }}>
               {suspects.length} suspect{suspects.length !== 1 ? 's' : ''} awaiting judgment
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="cinematic-panel w-full rounded-2xl divide-y divide-white/8 overflow-hidden">
               {suspects.map((name, i) => (
-                <div key={name} className="relative group rounded-xl overflow-hidden animate-fade-up"
-                  style={{
-                    animationDelay: `${i * 0.08}s`,
-                    background: 'linear-gradient(135deg, #1a1025 0%, #110d1e 100%)',
-                    border: '1px solid rgba(212,168,83,0.25)',
-                    boxShadow: '0 2px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)',
-                  }}>
-                  {/* Corner ornaments */}
-                  <div className="absolute top-1.5 left-2 text-amber-600/30 text-xs">✦</div>
-                  <div className="absolute top-1.5 right-2 text-amber-600/30 text-xs">✦</div>
-
-                  <div className="flex items-center gap-3 p-4">
-                    {/* Emoji avatar */}
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0"
-                      style={{
-                        background: 'radial-gradient(ellipse, #2d1b69 0%, #1a0f3c 100%)',
-                        border: '1px solid rgba(212,168,83,0.3)',
-                      }}>
-                      {SUSPECT_EMOJIS[i % SUSPECT_EMOJIS.length]}
-                    </div>
-                    {/* Name */}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-amber-100 font-cinzel font-bold text-sm truncate">{name}</p>
-                      <p className="text-stone-500 text-xs font-geist mt-0.5">Awaiting royal judgment...</p>
-                    </div>
-                    {/* Remove */}
-                    <button
-                      onClick={() => onRemoveSuspect(name)}
-                      className="text-stone-600 hover:text-red-400 transition-colors text-lg leading-none cursor-pointer flex-shrink-0 w-6 h-6 flex items-center justify-center"
-                    >
-                      ×
-                    </button>
+                <div key={name} className="flex items-center gap-3 px-4 py-3 animate-blur-fade-up"
+                  style={{ animationDelay: `${i * 60}ms` }}>
+                  {/* Order badge */}
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-cinzel text-amber-300 bg-amber-400/10 border border-amber-400/20 shrink-0">
+                    {i + 1}
                   </div>
-                  {i === 0 && (
-                    <div className="px-4 pb-2">
-                      <span className="text-xs text-amber-600/60 font-cinzel uppercase tracking-wider">
-                        ← Judges first
+                  {/* Name */}
+                  <div className="flex-1 min-w-0 flex items-center gap-2">
+                    <p className="text-amber-100 font-cinzel font-bold text-sm truncate">{name}</p>
+                    {i === 0 && (
+                      <span className="shrink-0 text-[10px] uppercase tracking-wider font-cinzel text-amber-400/70 border border-amber-400/25 rounded-full px-2 py-0.5">
+                        First
                       </span>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  {/* Remove */}
+                  <button
+                    onClick={() => onRemoveSuspect(name)}
+                    className="text-stone-500 hover:text-red-400 transition-colors cursor-pointer shrink-0 w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/5"
+                  >
+                    <X size={16} />
+                  </button>
                 </div>
               ))}
             </div>
@@ -167,22 +121,21 @@ export default function ChamberSection({ suspects, onAddSuspect, onRemoveSuspect
         {suspects.length > 0 && (
           <button
             onClick={onJudge}
-            className="group relative w-full max-w-sm py-5 font-cinzel font-black text-xl uppercase tracking-widest rounded-xl overflow-hidden transition-transform duration-200 hover:scale-105 active:scale-95 cursor-pointer animate-gold-pulse"
+            className="w-full max-w-sm py-4 font-cinzel font-black text-lg uppercase tracking-widest rounded-xl transition-all duration-200 hover:scale-[1.02] active:scale-95 cursor-pointer flex items-center justify-center gap-3"
+            style={{
+              background: 'linear-gradient(180deg, #e8c887 0%, #b8863f 100%)',
+              color: '#1c1917',
+              border: '1px solid rgba(212,168,83,0.4)',
+            }}
           >
-            <div className="absolute inset-0 rounded-xl"
-              style={{ background: 'linear-gradient(180deg, #fde68a 0%, #f59e0b 25%, #d97706 55%, #b45309 80%, #d97706 95%, #fbbf24 100%)' }} />
-            <div className="absolute inset-x-0 top-0 h-1/2 rounded-t-xl opacity-25"
-              style={{ background: 'linear-gradient(180deg, rgba(255,255,255,0.5) 0%, transparent 100%)' }} />
-            <div className="absolute inset-0 rounded-xl border border-amber-200/30" />
-            <span className="relative text-stone-900 font-black flex items-center justify-center gap-3">
-              ⚔️ JUDGE THEM
-              {suspects.length > 1 && <span className="text-stone-700 font-bold text-base">({suspects.length})</span>}
-            </span>
+            <Swords size={20} />
+            Judge Them
+            {suspects.length > 1 && <span className="opacity-60 font-bold text-base">({suspects.length})</span>}
           </button>
         )}
 
         {suspects.length === 0 && (
-          <p className="text-stone-600 text-sm font-geist text-center">
+          <p className="text-stone-200 text-sm font-geist text-center" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.85)' }}>
             Add a name above to begin the judgment
           </p>
         )}

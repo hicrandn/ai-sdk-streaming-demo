@@ -1,14 +1,16 @@
 import { streamText, Output, NoObjectGeneratedError } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { verdictSchema } from '@/lib/schemas';
 
 export const runtime = 'nodejs';
+
+const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export async function POST(req: Request) {
   const { name } = await req.json();
 
   const result = streamText({
-    model: openai('gpt-4o'),
+    model: google('gemini-3.1-flash-lite-preview'),
     system: `You are an unhinged, dramatic medieval AI King who judges all who come before your throne.
 Always reference something REAL and specific about the subject — a known fact, trait, or cultural detail — twisted into absurd medieval terms.
 Be hilarious, creative, and unhinged. The funnier the better. Make people want to screenshot and share.

@@ -8,8 +8,10 @@ import HeroSection from '@/components/HeroSection';
 import ChamberSection from '@/components/ChamberSection';
 import LoadingSection from '@/components/LoadingSection';
 import VerdictSection from '@/components/VerdictSection';
+import ErrorSection from '@/components/ErrorSection';
+import CinematicBackground from '@/components/CinematicBackground';
 
-type Stage = 'hero' | 'chamber' | 'loading' | 'verdict';
+type Stage = 'hero' | 'chamber' | 'loading' | 'verdict' | 'error';
 
 const MIN_LOADING_MS = 2800;
 
@@ -21,15 +23,20 @@ export default function Home() {
   const [isShaking, setIsShaking] = useState(false);
   const loadingStartRef = useRef(0);
 
-  const { object, submit, isLoading, stop } = useObject({
+  const { object, submit, isLoading, error, stop } = useObject({
     api: '/api/judge',
     schema: verdictSchema,
   });
 
-  // Transition from loading → verdict with minimum display time + shake effect
+  // Transition from loading → verdict (success) or error (failure) once the stream settles
   useEffect(() => {
     if (stage !== 'loading') return;
-    if (isLoading || !object?.verdict) return;
+    if (isLoading) return;
+
+    if (!object?.verdict) {
+      const errorTimer = setTimeout(() => setStage('error'), 0);
+      return () => clearTimeout(errorTimer);
+    }
 
     const elapsed = Date.now() - loadingStartRef.current;
     const remaining = Math.max(0, MIN_LOADING_MS - elapsed);
@@ -82,6 +89,11 @@ export default function Home() {
     setSuspects(prev => prev.filter(s => s !== name));
   };
 
+  const handleRetry = () => {
+    if (!currentSuspect) return;
+    judgeOne(currentSuspect);
+  };
+
   const handleStartOver = () => {
     stop();
     setSuspects([]);
@@ -91,35 +103,48 @@ export default function Home() {
   };
 
   return (
-    <div className="relative">
-      {stage === 'hero' && (
-        <HeroSection onEnter={() => setStage('chamber')} />
-      )}
+    <div className="relative min-h-screen bg-black">
+      <CinematicBackground />
 
-      {stage === 'chamber' && (
-        <ChamberSection
-          suspects={suspects}
-          onAddSuspect={handleAddSuspect}
-          onRemoveSuspect={handleRemoveSuspect}
-          onJudge={handleJudgeFromChamber}
-        />
-      )}
+      <div className="relative z-10">
+        {stage === 'hero' && (
+          <HeroSection onEnter={() => setStage('chamber')} />
+        )}
 
-      {stage === 'loading' && (
-        <LoadingSection name={currentSuspect} isShaking={isShaking} />
-      )}
+        {stage === 'chamber' && (
+          <ChamberSection
+            suspects={suspects}
+            onAddSuspect={handleAddSuspect}
+            onRemoveSuspect={handleRemoveSuspect}
+            onJudge={handleJudgeFromChamber}
+          />
+        )}
 
-      {stage === 'verdict' && (
-        <VerdictSection
-          name={currentSuspect}
-          data={verdictData ?? object}
-          isStreaming={isLoading}
-          hasMoreSuspects={suspects.length > 1}
-          onJudgeNext={handleJudgeNext}
-          onAddMore={() => setStage('chamber')}
-          onStartOver={handleStartOver}
-        />
-      )}
+        {stage === 'loading' && (
+          <LoadingSection name={currentSuspect} isShaking={isShaking} />
+        )}
+
+        {stage === 'error' && (
+          <ErrorSection
+            name={currentSuspect}
+            message={error?.message}
+            onRetry={handleRetry}
+            onStartOver={handleStartOver}
+          />
+        )}
+
+        {stage === 'verdict' && (
+          <VerdictSection
+            name={currentSuspect}
+            data={verdictData ?? object}
+            isStreaming={isLoading}
+            hasMoreSuspects={suspects.length > 1}
+            onJudgeNext={handleJudgeNext}
+            onAddMore={() => setStage('chamber')}
+            onStartOver={handleStartOver}
+          />
+        )}
+      </div>
     </div>
   );
 }
