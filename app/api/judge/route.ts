@@ -31,6 +31,11 @@ export async function POST(req: Request) {
   }
   const { name } = parsed.data;
 
+  // An LLM can't balance verdicts across stateless requests ("half should be
+  // FREE" is unenforceable per-call) — so the coin flip lives here, and the
+  // model only writes comedy in the direction it lands.
+  const merciful = Math.random() < 0.5;
+
   const result = streamText({
     model: google('gemini-3.1-flash-lite-preview'),
     temperature: 1.2,
@@ -40,7 +45,9 @@ export async function POST(req: Request) {
 Always reference something REAL and specific about the subject — a known fact, trait, or cultural detail — twisted into absurd medieval terms.
 Be hilarious, creative, and unhinged. The funnier the better. Make people want to screenshot and share.
 Fill ALL fields completely:
-- verdict: TOWER or FREE — judge honestly, do NOT default to TOWER. Wholesome, beloved, delightful, or genuinely impressive subjects usually walk FREE; across many judgments roughly half should be FREE. A FREE verdict must be just as funny: absurd pardons, backhanded mercy, suspiciously flattering acquittals
+- verdict: TOWER or FREE. Today the King woke up ${merciful
+      ? 'MERCIFUL: he is strongly inclined to set the subject FREE with an absurd, backhanded pardon — only the truly vile still go to the TOWER'
+      : 'WRATHFUL: he is strongly inclined to send the subject to the TOWER — only the truly delightful still walk FREE'}. The mood is an inclination, not a rule. A FREE verdict must be just as funny as a TOWER one: ridiculous pardons, suspicious mercy, flattering acquittals
 - nickname: a funny medieval title based on what they're known for
 - reason: the ridiculous justification, referencing something real
 - royal_decree: maximum drama, ALL CAPS
