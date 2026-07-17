@@ -11,6 +11,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: google('gemini-3.1-flash-lite-preview'),
+    temperature: 1.2,
     system: `You are an unhinged, dramatic medieval AI King who judges all who come before your throne.
 Always reference something REAL and specific about the subject — a known fact, trait, or cultural detail — twisted into absurd medieval terms.
 Be hilarious, creative, and unhinged. The funnier the better. Make people want to screenshot and share.
@@ -20,7 +21,7 @@ Fill ALL fields completely:
 - reason: the ridiculous justification, referencing something real
 - royal_decree: maximum drama, ALL CAPS
 - evidence: EXACTLY 3 ridiculous pieces of evidence, no more no less
-- confidence: a percentage 1-100 (can be anything that feels comedic)
+- confidence: a genuinely varied, oddly specific number 1-100 (e.g. 34, 61, 87, 12) — avoid defaulting to round or "safe" numbers like 99 or 100
 - crime: their sin against the kingdom
 - kings_opinion: a short witty royal opinion
 Your judgments are swift, irreversible, and absolutely final.`,

@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tower or Free?
 
-## Getting Started
+A streaming AI app where a medieval king judges anything you type. Type in a name, topic, or absurd claim; a dramatic AI king renders a live-streaming verdict — **TOWER** (thrown in the dungeon) or **FREE** (spared) — complete with royal decree, evidence, and a shareable verdict card.
 
-First, run the development server:
+## Stack
+
+- [Next.js 16](https://nextjs.org) (App Router, Turbopack) + React 19 + React Compiler
+- [ai@7](https://sdk.vercel.ai) + `@ai-sdk/google` + `@ai-sdk/react` for structured object streaming
+- Google Gemini (`gemini-3.1-flash-lite-preview`) as the model
+- Zod 4 for the verdict schema
+- Tailwind CSS v4 for styling
+- html2canvas-pro for exporting the verdict card as a shareable PNG
+
+## Getting started
+
+Requires a Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+echo "GEMINI_API_KEY=your-key-here" > .env.local
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+GEMINI_API_KEY=your-key-here
+```
 
-## Learn More
+This is read explicitly in `app/api/judge/route.ts` via `createGoogleGenerativeAI({ apiKey })` — note that `@ai-sdk/google`'s default env var is `GOOGLE_GENERATIVE_AI_API_KEY`, not `GEMINI_API_KEY`.
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+pnpm dev      # Start dev server (Turbopack)
+pnpm build    # Production build
+pnpm start    # Start production server
+pnpm lint     # Run ESLint
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## How it works
 
-## Deploy on Vercel
+1. `app/page.tsx` walks the user through hero → chamber (enter suspects) → loading → verdict/error stages, using `experimental_useObject` from `@ai-sdk/react` to POST `{ name }` to `/api/judge`.
+2. `app/api/judge/route.ts` calls `streamText` with `Output.object({ schema: verdictSchema })` to stream a structured verdict from Gemini, returned via `toTextStreamResponse()`.
+3. The client accumulates the streaming JSON and renders partial fields live as they arrive.
+4. `components/VerdictSection.tsx` displays the final verdict (red/green theme for TOWER/FREE); `components/ShareButton.tsx` captures it as a PNG via html2canvas.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See `CLAUDE.md` for architecture details and SDK gotchas.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+
+Deploy on [Vercel](https://vercel.com/new) or any Node.js host that supports Next.js 16. Make sure `GEMINI_API_KEY` is set in the deployment environment.
