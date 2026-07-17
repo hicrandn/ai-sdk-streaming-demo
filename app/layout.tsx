@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cinzel, Cinzel_Decorative, Geist } from "next/font/google";
 import "./globals.css";
 
@@ -19,9 +19,28 @@ const geist = Geist({
   subsets: ["latin"],
 });
 
+const APP_TITLE = "Tower or Free? ⚔️";
+const APP_DESCRIPTION =
+  "The AI Medieval King judges all. Enter your suspects and learn their fate — verdicts streamed live from the throne.";
+
 export const metadata: Metadata = {
-  title: "Tower or Free? ⚔️",
-  description: "The AI Medieval King judges all. Enter your suspects and learn their fate.",
+  title: APP_TITLE,
+  description: APP_DESCRIPTION,
+  openGraph: {
+    title: APP_TITLE,
+    description: APP_DESCRIPTION,
+    type: "website",
+    siteName: "Tower or Free?",
+  },
+  twitter: {
+    card: "summary",
+    title: APP_TITLE,
+    description: APP_DESCRIPTION,
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0c0a09",
 };
 
 export default function RootLayout({

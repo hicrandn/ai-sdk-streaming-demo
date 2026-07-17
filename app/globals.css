@@ -81,6 +81,17 @@
 .animate-flicker-in     { animation: flickerIn 0.8s ease-out forwards; }
 .animate-blur-fade-up   { opacity: 0; animation: blurFadeUp 1s ease-out forwards; }
 
+/* ── Reduced motion: land animations on their final frame ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ── Gold gradient heading (shared across hero/chamber/loading) ── */
 .heading-gold {
   background-image: linear-gradient(180deg, #f0d9a3 0%, #c99a4e 100%);

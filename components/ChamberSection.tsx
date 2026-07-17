@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Plus, Swords, X } from 'lucide-react';
 import RoyalButton from './RoyalButton';
 
-const PLACEHOLDER_CYCLE = ['Elon Musk', 'Kanye West', 'My Ex', 'Pizza', 'Your Boss', 'Mondays', 'AI', 'Your Cat'];
+const PLACEHOLDER_CYCLE = ['My Ex', 'Kanye West', 'Elon Musk', 'Pizza', 'Your Boss', 'Mondays', 'AI', 'Your Cat'];
 
 interface Props {
   suspects: string[];
@@ -66,6 +66,7 @@ export default function ChamberSection({ suspects, onAddSuspect, onRemoveSuspect
             }}
             placeholder={PLACEHOLDER_CYCLE[placeholderIdx]}
             maxLength={60}
+            aria-label="Suspect name"
             className="flex-1 bg-transparent text-amber-50 placeholder-stone-400 caret-amber-300 text-base font-geist focus:outline-none"
           />
           <RoyalButton
@@ -108,6 +109,7 @@ export default function ChamberSection({ suspects, onAddSuspect, onRemoveSuspect
                   {/* Remove */}
                   <button
                     onClick={() => onRemoveSuspect(name)}
+                    aria-label={`Remove ${name}`}
                     className="text-stone-400 hover:text-red-400 transition-colors cursor-pointer shrink-0 w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/5"
                   >
                     <X size={16} />

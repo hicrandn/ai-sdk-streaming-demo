@@ -11,6 +11,8 @@ export default function CinematicBackground() {
         muted
         loop
         playsInline
+        aria-hidden="true"
+        tabIndex={-1}
       />
       <div className="hero-bottom-blur fixed inset-0 z-1 pointer-events-none backdrop-blur-xl" />
     </>
