@@ -1,6 +1,7 @@
 'use client';
 
 import { Download } from 'lucide-react';
+import RoyalButton from './RoyalButton';
 
 export default function ShareButton() {
   const handleShare = async () => {
@@ -31,18 +32,9 @@ export default function ShareButton() {
   };
 
   return (
-    <button
-      onClick={handleShare}
-      className="w-full py-3 rounded-xl font-cinzel font-bold uppercase tracking-widest text-sm cursor-pointer transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-      style={{
-        background: 'rgba(255,255,255,0.07)',
-        color: '#d4a853',
-        border: '1px solid rgba(212,168,83,0.3)',
-        backdropFilter: 'blur(4px)',
-      }}
-    >
+    <RoyalButton variant="ghost" onClick={handleShare} className="w-full rounded-xl py-3 font-bold text-sm tracking-widest">
       <Download size={16} />
       Download & Share
-    </button>
+    </RoyalButton>
   );
 }

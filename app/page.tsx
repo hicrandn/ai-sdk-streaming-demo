@@ -66,19 +66,16 @@ export default function Home() {
     submit({ name });
   };
 
-  const handleJudgeFromChamber = () => {
-    if (suspects.length === 0) return;
-    judgeOne(suspects[0]);
-  };
-
-  const handleJudgeNext = () => {
-    const remaining = suspects.slice(1);
-    setSuspects(remaining);
-    if (remaining.length > 0) {
-      judgeOne(remaining[0]);
-    } else {
+  // Suspects form a queue of people not yet judged: whoever is sent to the
+  // throne is removed immediately, so the list never re-offers a judged name.
+  const judgeNextInQueue = () => {
+    const [next, ...rest] = suspects;
+    if (!next) {
       setStage('chamber');
+      return;
     }
+    setSuspects(rest);
+    judgeOne(next);
   };
 
   const handleAddSuspect = (name: string) => {
@@ -116,7 +113,7 @@ export default function Home() {
             suspects={suspects}
             onAddSuspect={handleAddSuspect}
             onRemoveSuspect={handleRemoveSuspect}
-            onJudge={handleJudgeFromChamber}
+            onJudge={judgeNextInQueue}
           />
         )}
 
@@ -138,8 +135,8 @@ export default function Home() {
             name={currentSuspect}
             data={verdictData ?? object}
             isStreaming={isLoading}
-            hasMoreSuspects={suspects.length > 1}
-            onJudgeNext={handleJudgeNext}
+            hasMoreSuspects={suspects.length > 0}
+            onJudgeNext={judgeNextInQueue}
             onAddMore={() => setStage('chamber')}
             onStartOver={handleStartOver}
           />

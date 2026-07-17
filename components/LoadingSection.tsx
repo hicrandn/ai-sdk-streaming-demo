@@ -2,6 +2,11 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { Scale } from 'lucide-react';
+import {
+  INK, INK_BODY, INK_FADED, INK_LINE,
+  PARCHMENT_BG, PARCHMENT_BORDER, PARCHMENT_SHADOW,
+  WAX_SHADOW, WAX_NEUTRAL,
+} from '@/lib/parchment';
 
 const LOADING_MSGS = [
   'The King ponders your fate...',
@@ -71,68 +76,74 @@ export default function LoadingSection({ name, isShaking }: Props) {
     <div className={`relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 ${isShaking ? 'animate-shake' : ''}`}>
       <LoadingParticles />
 
-      <div className="cinematic-panel relative z-10 flex flex-col items-center gap-8 px-8 py-10 sm:px-12 sm:py-12 rounded-2xl text-center animate-blur-fade-up">
+      {/* Parchment being written — same document language as the verdict decree */}
+      <div
+        className="relative z-10 w-full max-w-md animate-blur-fade-up"
+        style={{
+          background: PARCHMENT_BG,
+          border: PARCHMENT_BORDER,
+          borderRadius: 6,
+          boxShadow: PARCHMENT_SHADOW,
+          color: INK,
+        }}
+      >
+        <div className="m-2.5 px-6 pt-7 pb-6 sm:px-9 flex flex-col items-center text-center" style={{ border: `1px solid ${INK_LINE}`, borderRadius: 3 }}>
 
-        {/* Royal seal animation */}
-        <div className="relative">
-          <div className="absolute inset-0 rounded-full blur-3xl scale-150 opacity-40"
-            style={{ background: 'radial-gradient(ellipse, #d4a853 0%, transparent 70%)' }} />
-          <div className="relative w-32 h-32 rounded-full flex items-center justify-center animate-breathe"
-            style={{
-              background: 'radial-gradient(ellipse at 40% 30%, #2a2015 0%, #110d08 70%)',
-              border: '2px solid rgba(212,168,83,0.45)',
-              boxShadow: '0 0 24px rgba(212,168,83,0.25)',
-            }}>
-            <Scale size={52} strokeWidth={1.5} className="text-amber-300" />
+          {/* Heading */}
+          <div className="flex flex-col items-center gap-1.5">
+            <div className="flex items-center gap-3 text-xs font-cinzel" style={{ color: INK_FADED }}>
+              <div className="h-px w-10" style={{ background: INK_LINE }} />⚜<div className="h-px w-10" style={{ background: INK_LINE }} />
+            </div>
+            <p className="font-cinzel-decorative font-bold uppercase text-lg tracking-[0.25em]">The Court Deliberates</p>
+            <p className="font-cinzel text-[11px] uppercase tracking-[0.2em]" style={{ color: INK_FADED }}>
+              By order of His Majesty the King
+            </p>
           </div>
-          {/* Orbiting particles */}
-          {[0, 1, 2].map(i => (
-            <div key={i} className="absolute w-2.5 h-2.5 rounded-full"
-              style={{
-                top: '50%', left: '50%',
-                backgroundColor: ['#fbbf24', '#d4a853', '#fde68a'][i],
-                animation: `particleFloat ${2.5 + i * 0.4}s linear ${i * 0.8}s infinite`,
-                '--drift': `${(i - 1) * 30}px`,
-                transform: `translate(-50%, -50%) rotate(${i * 120}deg) translateX(64px)`,
-              } as React.CSSProperties}
-            />
-          ))}
-        </div>
 
-        {/* Suspect name */}
-        <div className="flex flex-col items-center gap-2">
-          <p className="text-stone-300 text-xs font-cinzel uppercase tracking-widest">Now Judging</p>
-          <h2 className="font-cinzel font-black text-transparent bg-clip-text text-3xl sm:text-4xl"
-            style={{ backgroundImage: 'linear-gradient(180deg, #fde68a 0%, #d97706 100%)' }}>
-            {name}
-          </h2>
-        </div>
+          {/* Subject */}
+          <div className="mt-6 flex flex-col items-center gap-1.5">
+            <p className="font-cinzel text-[11px] uppercase tracking-[0.18em]" style={{ color: INK_FADED }}>
+              Judgment is being passed upon
+            </p>
+            <h2 className="font-cinzel-decorative font-black text-3xl sm:text-4xl leading-tight wrap-break-word max-w-full">
+              {name}
+            </h2>
+          </div>
 
-        {/* Divider */}
-        <div className="flex items-center gap-3 w-full max-w-xs">
-          <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,168,83,0.4))' }} />
-          <span className="text-amber-400/60 text-sm">⚜</span>
-          <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, rgba(212,168,83,0.4), transparent)' }} />
-        </div>
+          {/* Wax being prepared */}
+          <div
+            className="mt-7 w-16 h-16 rounded-full flex items-center justify-center animate-breathe"
+            style={{ background: WAX_NEUTRAL, boxShadow: WAX_SHADOW, transform: 'rotate(8deg)' }}
+          >
+            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ border: '1px solid rgba(255,255,255,0.3)' }}>
+              <Scale size={22} strokeWidth={1.75} style={{ color: 'rgba(255,244,220,0.9)' }} />
+            </div>
+          </div>
 
-        {/* Loading message */}
-        <div className="h-8 flex items-center">
-          <p className="text-amber-100 text-base font-geist" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.85)' }}>
-            {LOADING_MSGS[msgIdx]}{dots}
-          </p>
-        </div>
+          {/* Loading message */}
+          <div className="mt-6 h-6 flex items-center">
+            <p className="font-geist italic text-sm" style={{ color: INK_BODY }}>
+              {LOADING_MSGS[msgIdx]}{dots}
+            </p>
+          </div>
 
-        {/* Progress dots */}
-        <div className="flex gap-2">
-          {[0, 1, 2].map(i => (
-            <div key={i} className="w-2 h-2 rounded-full bg-amber-400/60"
-              style={{ animation: `breathe ${1.2}s ease-in-out ${i * 0.4}s infinite` }} />
-          ))}
-        </div>
+          {/* Progress dots */}
+          <div className="mt-4 flex gap-2">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="w-1.5 h-1.5 rounded-full"
+                style={{ background: INK_FADED, animation: `breathe 1.2s ease-in-out ${i * 0.4}s infinite` }} />
+            ))}
+          </div>
 
-        <p className="text-stone-300 text-xs font-geist uppercase tracking-widest">
-          The King does not rush
-        </p>
+          {/* Footer */}
+          <div className="mt-6 flex items-center gap-2 justify-center w-full">
+            <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, ${INK_LINE})` }} />
+            <p className="font-cinzel text-[10px] uppercase tracking-[0.2em]" style={{ color: INK_FADED }}>
+              The King does not rush
+            </p>
+            <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${INK_LINE}, transparent)` }} />
+          </div>
+        </div>
       </div>
     </div>
   );

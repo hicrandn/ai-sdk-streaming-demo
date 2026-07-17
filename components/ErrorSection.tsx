@@ -1,6 +1,7 @@
 'use client';
 
 import { RotateCcw, TriangleAlert } from 'lucide-react';
+import RoyalButton from './RoyalButton';
 
 interface Props {
   name: string;
@@ -25,7 +26,7 @@ export default function ErrorSection({ name, message, onRetry, onStartOver }: Pr
 
         <div className="flex flex-col items-center gap-2">
           <p className="text-stone-300 text-xs font-cinzel uppercase tracking-widest">The Court Was Interrupted</p>
-          <h2 className="font-cinzel font-black text-red-300 text-xl sm:text-2xl">
+          <h2 className="font-cinzel-decorative font-bold text-red-300 text-xl sm:text-2xl">
             The King Could Not Judge {name}
           </h2>
         </div>
@@ -35,35 +36,19 @@ export default function ErrorSection({ name, message, onRetry, onStartOver }: Pr
         </p>
 
         {message && (
-          <p className="text-stone-500 text-xs font-geist break-words line-clamp-3">
+          <p className="text-stone-500 text-xs font-geist wrap-break-word line-clamp-3">
             {message}
           </p>
         )}
 
         <div className="flex flex-col sm:flex-row gap-3 w-full">
-          <button
-            onClick={onRetry}
-            className="flex-1 py-3 rounded-xl font-cinzel font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-            style={{
-              background: 'linear-gradient(180deg, #e8c887 0%, #b8863f 100%)',
-              color: '#1c1917',
-              border: '1px solid rgba(212,168,83,0.4)',
-            }}
-          >
+          <RoyalButton onClick={onRetry} className="flex-1 rounded-xl py-3 font-bold text-sm tracking-wider">
             <RotateCcw size={16} />
             Try Again
-          </button>
-          <button
-            onClick={onStartOver}
-            className="flex-1 py-3 rounded-xl font-cinzel font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:opacity-70"
-            style={{
-              background: 'transparent',
-              color: '#a8a29e',
-              border: '1px solid rgba(168,162,158,0.3)',
-            }}
-          >
+          </RoyalButton>
+          <RoyalButton variant="muted" onClick={onStartOver} className="flex-1 rounded-xl py-3 font-bold text-sm tracking-wider">
             Start Over
-          </button>
+          </RoyalButton>
         </div>
       </div>
     </div>

@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { type DeepPartial } from 'ai';
-import { Castle, Crown, Scale, Swords } from 'lucide-react';
+import { Castle, Crown, Swords } from 'lucide-react';
 import { type Verdict } from '@/lib/schemas';
 import ShareButton from './ShareButton';
+import RoyalButton from './RoyalButton';
+import {
+  INK, INK_BODY, INK_FADED, INK_LINE, PLACEHOLDER,
+  PARCHMENT_BG, PARCHMENT_BORDER, PARCHMENT_SHADOW,
+  WAX_SHADOW, WAX_NEUTRAL, WAX_TOWER, WAX_FREE,
+} from '@/lib/parchment';
 
 interface Props {
   name: string;
@@ -20,7 +26,6 @@ export default function VerdictSection({ name, data, isStreaming, hasMoreSuspect
   const [stamped, setStamped] = useState(false);
 
   const isTower = data?.verdict === 'TOWER';
-  const isFree = data?.verdict === 'FREE';
   const hasVerdict = !!data?.verdict;
 
   useEffect(() => {
@@ -30,40 +35,11 @@ export default function VerdictSection({ name, data, isStreaming, hasMoreSuspect
     }
   }, [hasVerdict]);
 
-  const towerTheme = {
-    bg: 'linear-gradient(160deg, rgba(20,4,4,0.92) 0%, rgba(32,8,8,0.92) 100%)',
-    border: 'rgba(220,38,38,0.5)',
-    glow: 'rgba(220,38,38,0.18)',
-    accent: '#f87171',
-    badge: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
-    badgeBorder: 'rgba(248,113,113,0.4)',
-    text: '#fca5a5',
-    SealIcon: Castle,
-  };
+  const stampColor = isTower ? '#9b1c1c' : '#166534';
+  const waxGradient = isTower ? WAX_TOWER : WAX_FREE;
+  const SealIcon = isTower ? Castle : Crown;
 
-  const freeTheme = {
-    bg: 'linear-gradient(160deg, rgba(4,20,10,0.92) 0%, rgba(7,32,15,0.92) 100%)',
-    border: 'rgba(212,168,83,0.6)',
-    glow: 'rgba(212,168,83,0.14)',
-    accent: '#fbbf24',
-    badge: 'linear-gradient(135deg, #065f46 0%, #064e3b 100%)',
-    badgeBorder: 'rgba(251,191,36,0.4)',
-    text: '#6ee7b7',
-    SealIcon: Crown,
-  };
-
-  const neutralTheme = {
-    bg: 'linear-gradient(160deg, rgba(11,11,17,0.92) 0%, rgba(16,16,29,0.92) 100%)',
-    border: 'rgba(212,168,83,0.2)',
-    glow: 'rgba(124,58,237,0.08)',
-    accent: '#a78bfa',
-    badge: 'linear-gradient(135deg, #1e1b4b 0%, #1a1040 100%)',
-    badgeBorder: 'rgba(167,139,250,0.3)',
-    text: '#c4b5fd',
-    SealIcon: Scale,
-  };
-
-  const theme = isTower ? towerTheme : isFree ? freeTheme : neutralTheme;
+  const evidence = (data?.evidence ?? []).filter(Boolean) as string[];
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start py-10 px-4">
@@ -79,208 +55,206 @@ export default function VerdictSection({ name, data, isStreaming, hasMoreSuspect
           </p>
         </div>
 
-        {/* ── THE SHAREABLE CARD ── */}
+        {/* ── THE ROYAL DECREE (shareable) ── */}
         <div
           id="judgement-card"
-          className="w-full rounded-2xl overflow-hidden animate-scroll-reveal"
+          className="w-full animate-scroll-reveal"
           style={{
-            background: theme.bg,
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: `2px solid ${theme.border}`,
-            boxShadow: `0 8px 32px ${theme.glow}`,
+            background: PARCHMENT_BG,
+            border: PARCHMENT_BORDER,
+            borderRadius: 6,
+            boxShadow: PARCHMENT_SHADOW,
+            color: INK,
           }}
         >
-          {/* Card top ornamental bar */}
-          <div className="h-1 w-full"
-            style={{ background: `linear-gradient(90deg, transparent, ${theme.accent}, transparent)` }} />
+          {/* inner frame */}
+          <div className="m-2.5 px-6 pt-7 pb-6 sm:px-9" style={{ border: `1px solid ${INK_LINE}`, borderRadius: 3 }}>
 
-          {/* Card header */}
-          <div className="flex flex-col items-center gap-3 pt-7 pb-4 px-6">
-            {/* Seal badge */}
-            <div className="w-14 h-14 rounded-full flex items-center justify-center animate-breathe shrink-0"
-              style={{
-                background: theme.badge,
-                border: `2px solid ${theme.badgeBorder}`,
-                boxShadow: `0 0 20px ${theme.glow}`,
-              }}>
-              <theme.SealIcon size={24} strokeWidth={1.75} style={{ color: theme.accent }} />
+            {/* Decree heading */}
+            <div className="flex flex-col items-center gap-1.5 text-center">
+              <div className="flex items-center gap-3 text-xs font-cinzel" style={{ color: INK_FADED }}>
+                <div className="h-px w-10" style={{ background: INK_LINE }} />⚜<div className="h-px w-10" style={{ background: INK_LINE }} />
+              </div>
+              <p className="font-cinzel-decorative font-bold uppercase text-lg tracking-[0.25em]">Royal Decree</p>
+              <p className="font-cinzel text-[11px] uppercase tracking-[0.2em]" style={{ color: INK_FADED }}>
+                By order of His Majesty the King
+              </p>
             </div>
 
-            {/* "Judgment on" */}
-            <p className="text-xs uppercase tracking-widest font-cinzel text-stone-300">
-              Royal Judgment on
-            </p>
-
-            {/* Name */}
-            <h2 className="font-cinzel font-black text-white text-2xl sm:text-3xl text-center leading-tight">
-              {name}
-            </h2>
-
-            {/* Nickname */}
-            {data?.nickname ? (
-              <p className="font-cinzel italic text-sm text-center" style={{ color: theme.accent }}>
-                &ldquo;{data.nickname}&rdquo;
+            {/* Subject */}
+            <div className="mt-6 flex flex-col items-center gap-1.5 text-center">
+              <p className="font-cinzel text-[11px] uppercase tracking-[0.18em]" style={{ color: INK_FADED }}>
+                Let it be known that judgment is passed upon
               </p>
-            ) : (
-              <div className="h-5 w-40 rounded bg-white/5 animate-pulse" />
-            )}
-          </div>
-
-          {/* Verdict stamp */}
-          <div className="px-6 py-3">
-            <div className="rounded-xl py-5 flex flex-col items-center gap-1"
-              style={{
-                background: theme.badge,
-                border: `1px solid ${theme.badgeBorder}`,
-              }}>
-              {hasVerdict ? (
-                <div className={`flex items-center gap-3 ${stamped ? 'animate-verdict-stamp' : 'opacity-0'}`}>
-                  {isTower ? <Castle size={32} style={{ color: theme.accent }} /> : <Crown size={32} style={{ color: theme.accent }} />}
-                  <p className="font-cinzel-decorative font-black text-center leading-none"
-                    style={{
-                      fontSize: 'clamp(1.5rem, 5.5vw, 2.25rem)',
-                      color: theme.accent,
-                      letterSpacing: '0.06em',
-                    }}>
-                    {isTower ? 'INTO THE TOWER!' : 'YOU ARE FREE!'}
-                  </p>
-                </div>
-              ) : (
-                <p className="font-cinzel text-white/30 uppercase tracking-widest text-lg animate-pulse">
-                  Awaiting verdict...
+              <h2 className="font-cinzel-decorative font-black text-3xl sm:text-4xl leading-tight wrap-break-word max-w-full">
+                {name}
+              </h2>
+              {data?.nickname ? (
+                <p className="font-cinzel italic text-sm" style={{ color: INK_FADED }}>
+                  &ldquo;{data.nickname}&rdquo;
                 </p>
+              ) : (
+                <div className="h-4 w-44 rounded animate-pulse" style={{ background: PLACEHOLDER }} />
               )}
             </div>
-          </div>
 
-          {/* Divider */}
-          <div className="mx-6">
-            <div className="h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.border}, transparent)` }} />
-          </div>
-
-          {/* Royal decree */}
-          <div className="px-6 py-4">
-            {data?.royal_decree ? (
-              <p className="font-cinzel font-bold text-center text-sm uppercase tracking-wider text-stone-50">
-                {data.royal_decree}
+            {/* Crime */}
+            <div className="mt-6 text-center">
+              <p className="font-cinzel text-[11px] uppercase tracking-[0.2em] mb-1" style={{ color: INK_FADED }}>
+                For the crime of
               </p>
-            ) : (
-              <div className="h-5 w-3/4 mx-auto rounded bg-white/5 animate-pulse" />
-            )}
-          </div>
+              {data?.crime ? (
+                <p className="font-cinzel font-bold text-base uppercase tracking-wide">{data.crime}</p>
+              ) : (
+                <div className="h-5 w-2/3 mx-auto rounded animate-pulse" style={{ background: PLACEHOLDER }} />
+              )}
+            </div>
 
-          {/* Reason */}
-          <div className="px-6 pb-4">
-            {data?.reason ? (
-              <p className="text-stone-300 text-sm italic text-center font-geist leading-relaxed">
-                &ldquo;{data.reason}&rdquo;
-              </p>
-            ) : (
-              <div className="flex flex-col gap-1.5">
-                <div className="h-4 rounded bg-white/5 animate-pulse" />
-                <div className="h-4 w-3/4 mx-auto rounded bg-white/5 animate-pulse" />
+            {/* Reason */}
+            <div className="mt-4 text-center">
+              {data?.reason ? (
+                <p className="font-geist italic text-sm leading-relaxed" style={{ color: INK_BODY }}>
+                  &ldquo;{data.reason}&rdquo;
+                </p>
+              ) : (
+                <div className="flex flex-col gap-1.5">
+                  <div className="h-4 rounded animate-pulse" style={{ background: PLACEHOLDER }} />
+                  <div className="h-4 w-3/4 mx-auto rounded animate-pulse" style={{ background: PLACEHOLDER }} />
+                </div>
+              )}
+            </div>
+
+            {/* Evidence */}
+            {evidence.length > 0 && (
+              <div className="mt-6">
+                <div className="flex items-center gap-3 mb-2.5">
+                  <div className="h-px flex-1" style={{ background: INK_LINE }} />
+                  <p className="font-cinzel text-[11px] uppercase tracking-[0.2em]" style={{ color: INK_FADED }}>
+                    The evidence presented
+                  </p>
+                  <div className="h-px flex-1" style={{ background: INK_LINE }} />
+                </div>
+                <ol className="flex flex-col gap-1.5">
+                  {evidence.map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-sm font-geist" style={{ color: INK_BODY }}>
+                      <span className="font-cinzel font-bold shrink-0 mt-px" style={{ color: INK_FADED }}>
+                        {['I.', 'II.', 'III.'][i] ?? `${i + 1}.`}
+                      </span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ol>
               </div>
             )}
-          </div>
 
-          {/* Stats grid */}
-          <div className="mx-6 mb-4 rounded-xl p-4 grid grid-cols-3 gap-4"
-            style={{
-              background: 'rgba(0,0,0,0.3)',
-              border: '1px solid rgba(255,255,255,0.06)',
-            }}>
-            <div className="flex flex-col gap-1 items-center text-center">
-              <span className="text-xs uppercase tracking-wider font-cinzel text-stone-500">Confidence</span>
-              {data?.confidence ? (
-                <span className="font-black text-lg font-geist" style={{ color: theme.accent }}>{data.confidence}%</span>
+            {/* Royal decree proclamation */}
+            <div className="mt-6 text-center">
+              {data?.royal_decree ? (
+                <p className="font-cinzel font-black text-sm sm:text-base uppercase tracking-[0.08em] leading-snug">
+                  {data.royal_decree}
+                </p>
               ) : (
-                <div className="h-6 w-12 rounded bg-white/5 animate-pulse mt-1" />
+                <div className="h-5 w-3/4 mx-auto rounded animate-pulse" style={{ background: PLACEHOLDER }} />
               )}
             </div>
-            <div className="flex flex-col gap-1 items-center text-center border-x border-white/5">
-              <span className="text-xs uppercase tracking-wider font-cinzel text-stone-500">Crime</span>
-              {data?.crime ? (
-                <span className="font-bold text-xs font-geist text-stone-300 leading-tight">{data.crime}</span>
-              ) : (
-                <div className="h-4 w-16 rounded bg-white/5 animate-pulse mt-1" />
-              )}
-            </div>
-            <div className="flex flex-col gap-1 items-center text-center">
-              <span className="text-xs uppercase tracking-wider font-cinzel text-stone-500">Opinion</span>
-              {data?.kings_opinion ? (
-                <span className="font-bold text-xs font-geist text-stone-300 leading-tight">{data.kings_opinion}</span>
-              ) : (
-                <div className="h-4 w-16 rounded bg-white/5 animate-pulse mt-1" />
-              )}
-            </div>
-          </div>
 
-          {/* Evidence */}
-          {(data?.evidence ?? []).filter(Boolean).length > 0 && (
-            <div className="mx-6 mb-5 flex flex-col gap-2">
-              <p className="text-xs uppercase tracking-widest font-cinzel text-stone-400 text-center">Evidence Against</p>
-              {(data!.evidence as string[]).filter(Boolean).map((item, i) => (
-                <div key={i} className="flex items-start gap-2 text-sm font-geist text-stone-400">
-                  <span className="text-amber-600 shrink-0 mt-0.5">§</span>
-                  <span>{item}</span>
+            {/* THE STAMP */}
+            <div className="mt-6 mb-2 flex justify-center">
+              {hasVerdict ? (
+                <div style={{ transform: 'rotate(-5deg)' }}>
+                  <div
+                    className={stamped ? 'animate-verdict-stamp' : 'opacity-0'}
+                    style={{
+                      border: `3px solid ${stampColor}`,
+                      borderRadius: 8,
+                      padding: '8px 22px',
+                      color: stampColor,
+                      boxShadow: `inset 0 0 14px ${stampColor}33`,
+                      background: `${stampColor}0d`,
+                    }}
+                  >
+                    <p
+                      className="font-cinzel-decorative font-black leading-none text-center"
+                      style={{ fontSize: 'clamp(1.5rem, 5.5vw, 2.1rem)', letterSpacing: '0.07em' }}
+                    >
+                      {isTower ? 'TO THE TOWER!' : 'SET FREE!'}
+                    </p>
+                  </div>
                 </div>
-              ))}
+              ) : (
+                <div
+                  className="rounded-lg px-8 py-3 animate-pulse"
+                  style={{ border: `2px dashed ${INK_LINE}` }}
+                >
+                  <p className="font-cinzel uppercase tracking-[0.2em] text-sm" style={{ color: INK_FADED }}>
+                    Awaiting the royal stamp…
+                  </p>
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Card footer */}
-          <div className="px-6 pb-5">
-            {!isStreaming && hasVerdict && <ShareButton />}
-          </div>
+            {/* Signature + wax seal */}
+            <div className="mt-6 flex items-end justify-between gap-4">
+              <div className="flex flex-col gap-1 min-w-0">
+                {data?.kings_opinion && (
+                  <p className="font-geist italic text-xs leading-snug mb-1.5" style={{ color: INK_FADED }}>
+                    &ldquo;{data.kings_opinion}&rdquo;
+                  </p>
+                )}
+                <p className="font-cinzel-decorative font-bold text-base leading-none">His Royal Majesty</p>
+                <div className="h-px w-36 my-1" style={{ background: INK_LINE }} />
+                <p className="font-cinzel text-[10px] uppercase tracking-[0.18em]" style={{ color: INK_FADED }}>
+                  {data?.confidence ? `Royal certainty · ${data.confidence}%` : 'The King of the Realm'}
+                </p>
+              </div>
 
-          {/* Bottom ornament */}
-          <div className="flex items-center gap-2 px-6 pb-5 justify-center">
-            <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, ${theme.border})` }} />
-            <p className="text-stone-500 text-xs font-cinzel uppercase tracking-widest">Tower or Free? • AI Medieval King</p>
-            <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${theme.border}, transparent)` }} />
+              {/* Wax seal */}
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center shrink-0"
+                style={{
+                  background: hasVerdict ? waxGradient : WAX_NEUTRAL,
+                  boxShadow: WAX_SHADOW,
+                  transform: 'rotate(8deg)',
+                }}
+              >
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{ border: '1px solid rgba(255,255,255,0.3)' }}
+                >
+                  <SealIcon size={22} strokeWidth={1.75} style={{ color: 'rgba(255,244,220,0.9)' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-6 flex items-center gap-2 justify-center">
+              <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, transparent, ${INK_LINE})` }} />
+              <p className="font-cinzel text-[10px] uppercase tracking-[0.2em]" style={{ color: INK_FADED }}>
+                Tower or Free? · AI Medieval King
+              </p>
+              <div className="h-px flex-1" style={{ background: `linear-gradient(90deg, ${INK_LINE}, transparent)` }} />
+            </div>
           </div>
         </div>
 
         {/* Action buttons (outside the shareable card) */}
         {!isStreaming && hasVerdict && (
-          <div className="flex flex-col sm:flex-row gap-3 w-full animate-fade-up" style={{ animationDelay: '0.3s' }}>
-            {hasMoreSuspects && (
-              <button
-                onClick={onJudgeNext}
-                className="flex-1 py-3 rounded-xl font-cinzel font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                style={{
-                  background: 'linear-gradient(180deg, #e8c887 0%, #b8863f 100%)',
-                  color: '#1c1917',
-                  border: '1px solid rgba(212,168,83,0.4)',
-                }}
-              >
-                <Swords size={16} />
-                Next Suspect
-              </button>
-            )}
-            <button
-              onClick={onAddMore}
-              className="flex-1 py-3 rounded-xl font-cinzel font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:scale-105 active:scale-95 backdrop-blur-xl"
-              style={{
-                background: 'rgba(0,0,0,0.4)',
-                color: '#c4b5fd',
-                border: '1px solid rgba(167,139,250,0.3)',
-              }}
-            >
-              + Add More
-            </button>
-            <button
-              onClick={onStartOver}
-              className="flex-1 py-3 rounded-xl font-cinzel font-bold uppercase tracking-wider text-sm cursor-pointer transition-all hover:opacity-70 backdrop-blur-xl"
-              style={{
-                background: 'rgba(0,0,0,0.4)',
-                color: '#d6d3d1',
-                border: '1px solid rgba(214,211,209,0.25)',
-              }}
-            >
-              Start Over
-            </button>
+          <div className="flex flex-col gap-3 w-full animate-fade-up" style={{ animationDelay: '0.3s' }}>
+            <ShareButton />
+            <div className="flex flex-col sm:flex-row gap-3 w-full">
+              {hasMoreSuspects && (
+                <RoyalButton onClick={onJudgeNext} className="flex-1 rounded-xl py-3 font-bold text-sm tracking-wider">
+                  <Swords size={16} />
+                  Next Suspect
+                </RoyalButton>
+              )}
+              <RoyalButton variant="ghost" onClick={onAddMore} className="flex-1 rounded-xl py-3 font-bold text-sm tracking-wider">
+                + Add More
+              </RoyalButton>
+              <RoyalButton variant="muted" onClick={onStartOver} className="flex-1 rounded-xl py-3 font-bold text-sm tracking-wider">
+                Start Over
+              </RoyalButton>
+            </div>
           </div>
         )}
       </div>

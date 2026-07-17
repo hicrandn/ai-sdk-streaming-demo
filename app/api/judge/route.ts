@@ -1,4 +1,4 @@
-import { streamText, Output, NoObjectGeneratedError } from 'ai';
+import { streamText, Output } from 'ai';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { verdictSchema } from '@/lib/schemas';
 
@@ -16,13 +16,13 @@ export async function POST(req: Request) {
 Always reference something REAL and specific about the subject — a known fact, trait, or cultural detail — twisted into absurd medieval terms.
 Be hilarious, creative, and unhinged. The funnier the better. Make people want to screenshot and share.
 Fill ALL fields completely:
-- verdict: must be either TOWER or FREE
+- verdict: TOWER or FREE — judge honestly, do NOT default to TOWER. Wholesome, beloved, delightful, or genuinely impressive subjects usually walk FREE; across many judgments roughly half should be FREE. A FREE verdict must be just as funny: absurd pardons, backhanded mercy, suspiciously flattering acquittals
 - nickname: a funny medieval title based on what they're known for
 - reason: the ridiculous justification, referencing something real
 - royal_decree: maximum drama, ALL CAPS
 - evidence: EXACTLY 3 ridiculous pieces of evidence, no more no less
 - confidence: a genuinely varied, oddly specific number 1-100 (e.g. 34, 61, 87, 12) — avoid defaulting to round or "safe" numbers like 99 or 100
-- crime: their sin against the kingdom
+- crime: the sin they stand accused of (they may still be pardoned for it)
 - kings_opinion: a short witty royal opinion
 Your judgments are swift, irreversible, and absolutely final.`,
     prompt: `Pass royal judgment on: "${name}"`,
