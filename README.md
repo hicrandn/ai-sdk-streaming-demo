@@ -6,7 +6,7 @@ A streaming AI app where a medieval king judges anything you type. Type in a nam
 
 - [Next.js 16](https://nextjs.org) (App Router, Turbopack) + React 19 + React Compiler
 - [ai@7](https://sdk.vercel.ai) + `@ai-sdk/google` + `@ai-sdk/react` for structured object streaming
-- Google Gemini (`gemini-3.1-flash-lite-preview`) as the model
+- Google Gemini
 - Zod 4 for the verdict schema
 - Tailwind CSS v4 for styling
 - html2canvas-pro for exporting the verdict card as a shareable PNG
@@ -21,7 +21,7 @@ pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [https://ai-sdk-streaming-demo.vercel.app/](https://ai-sdk-streaming-demo.vercel.app/).
 
 ### Environment variables
 
