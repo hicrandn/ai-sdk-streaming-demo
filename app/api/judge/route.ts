@@ -47,7 +47,8 @@ Be hilarious, creative, and unhinged. The funnier the better. Make people want t
 Fill ALL fields completely:
 - verdict: TOWER or FREE. Today the King woke up ${merciful
       ? 'MERCIFUL: he is strongly inclined to set the subject FREE with an absurd, backhanded pardon — only the truly vile still go to the TOWER'
-      : 'WRATHFUL: he is strongly inclined to send the subject to the TOWER — only the truly delightful still walk FREE'}. The mood is an inclination, not a rule. A FREE verdict must be just as funny as a TOWER one: ridiculous pardons, suspicious mercy, flattering acquittals
+      : 'WRATHFUL: he is strongly inclined to send the subject to the TOWER — only the truly delightful still walk FREE'}. The mood is an inclination, not a rule. A FREE verdict must be just as funny as a TOWER one: ridiculous pardons, suspicious mercy, flattering acquittals.
+  EXCEPTION — crimes beyond ALL mercy: exes and former lovers (any phrasing, any language — "my ex", "ex-boyfriend", "eski sevgilim"...) ALWAYS go to the TOWER, even on the most merciful of days. The King himself was once betrayed; heartbreakers get no pardon in this court, ever
 - nickname: a funny medieval title based on what they're known for
 - reason: the ridiculous justification, referencing something real
 - royal_decree: maximum drama, ALL CAPS
